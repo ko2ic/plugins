@@ -16,6 +16,7 @@ class FirebaseUserMetadata {
   final Map<dynamic, dynamic> _data;
 
   int get creationTimestamp => _data['creationTimestamp'];
+
   int get lastSignInTimestamp => _data['lastSignInTimestamp'];
 }
 
@@ -486,6 +487,20 @@ class FirebaseAuth {
     final Map<dynamic, dynamic> data = await channel.invokeMethod(
         'linkWithGithubCredential',
         <String, String>{'app': app.name, 'token': token});
+    final FirebaseUser currentUser = FirebaseUser._(data, app);
+    return currentUser;
+  }
+
+  Future<FirebaseUser> unlink({
+    @required String providerId,
+  }) async {
+    final Map<dynamic, dynamic> data = await channel.invokeMethod(
+      'unlink',
+      <String, String>{
+        'app': app.name,
+        'providerId': providerId,
+      },
+    );
     final FirebaseUser currentUser = FirebaseUser._(data, app);
     return currentUser;
   }
