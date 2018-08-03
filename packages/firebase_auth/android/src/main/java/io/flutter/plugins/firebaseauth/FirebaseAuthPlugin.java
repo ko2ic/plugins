@@ -121,6 +121,8 @@ public class FirebaseAuthPlugin implements MethodCallHandler {
         break;
       case "linkWithTwitterCredential":
         handleLinkWithTwitterCredential(call, result, getAuth(call));
+      case "unlink":
+        handleUnlink(call, result, getAuth(call));
         break;
       case "linkWithGithubCredential":
         handleLinkWithGithubCredential(call, result, getAuth(call));
@@ -458,6 +460,15 @@ public class FirebaseAuthPlugin implements MethodCallHandler {
     String token = arguments.get("token");
     firebaseAuth
         .signInWithCustomToken(token)
+        .addOnCompleteListener(new SignInCompleteListener(result));
+  }
+
+  private void handleUnlink(MethodCall call, final Result result, FirebaseAuth firebaseAuth) {
+    Map<String, String> arguments = call.arguments();
+    String providerId = arguments.get("providerId");
+    firebaseAuth
+        .getCurrentUser()
+        .unlink(providerId)
         .addOnCompleteListener(new SignInCompleteListener(result));
   }
 
